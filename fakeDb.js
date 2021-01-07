@@ -1,5 +1,5 @@
 "use strict";
 
-const items = [];
+const items = [{"name":"potato", "price":100}];
 
 module.exports = { items };
