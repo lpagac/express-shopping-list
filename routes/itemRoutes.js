@@ -13,15 +13,15 @@ router.get("/", function (req, res, next) {
 });
 
 /** POST an item to DB, return JSON of item add
- * POST body - {name: "popsicle", price: 1.45} => 
+ * POST body - {name: "popsicle", price: 1.45} =>
  * response body - {added: {name: "popsicle", price: 1.45}}
  * */
 
 router.post('/', function(req, res, next) {
-  if (!"name" in req.body || !"price" in req.body) {
+  if (!(req.body.name && req.body.price)) {
     throw new BadRequestError();
   }
-  items.push(req.body);
+  items.push({"name":req.body.name, "price":req.body.price});
   return res.status(201).json({added: items[items.length - 1]});
 });
 
@@ -40,6 +40,7 @@ router.patch('/:name', middleware.invalidItem, function(req, res, next) {
   let item = items.find(item => item['name'] === req.params.name);
   item['name'] = req.body.name || item['name'];
   item['price'] = req.body.price || item['price'];
+
   return res.status(200).json({updated: item});
 })
 
