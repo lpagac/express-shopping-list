@@ -6,11 +6,12 @@ let { items } = require("./fakeDb");
 
 
 beforeEach(function () {
-  items = [{ "name": "potato", "price": 100 }];
+  // items.pop();
+  items.push({ "name": "potato", "price": 100 });
 });
 
 afterEach(function () {
-  //
+  items = [];
 });
 
 /** GET /items - returns `{items: [item, ...]}` */
@@ -50,9 +51,9 @@ describe("GET /items/:name", function () {
       { "name": "potato", "price": 100 });
   })
 
-  it("Responds with 404 if name invalid", async function () {
-    const resp = await request(app).patch(`/items/gimmie404`);
-    expect(resp.statusCode).toEqual(404);
+  it("Responds with 400 if name invalid", async function () {
+    const resp = await request(app).get(`/items/gimmie404`);
+    expect(resp.statusCode).toEqual(400);
   });
 });
 
@@ -69,9 +70,9 @@ describe("PATCH /items/:name", function () {
       { "updated": { "name": "baked potato", "price": 200 } });
   })
 
-  it("Responds with 404 if name invalid", async function () {
+  it("Responds with 400 if name invalid", async function () {
     const resp = await request(app).patch(`/items/not-here`);
-    expect(resp.statusCode).toEqual(404);
+    expect(resp.statusCode).toEqual(400);
   });
 });
 
@@ -80,13 +81,17 @@ describe("PATCH /items/:name", function () {
 
 describe("DELETE /items/:name", function () {
   it("Deletes a single a item", async function () {
-    const resp = await request(app)
-      .delete(`/items/${pickles.name}`);
+    // console.log("Some LOOK ======>",items.some(item => item['name'] === "potato"));
+
+    const resp = await request(app).delete(`/items/potato`);
+    // console.log("BODY LOOK ======>",resp.body);
     expect(resp.body).toEqual({ message: "Deleted" });
-    expect(db.item.all().length).toEqual(0);
+    expect(items.length).toEqual(0);
+
   });
-  it("Responds with 404 if name invalid", async function () {
-    const resp = await request(app).patch(`/items/whatsGoinOn`);
-    expect(resp.statusCode).toEqual(404);
+
+  it("Responds with 400 if name invalid", async function () {
+    const resp = await request(app).delete(`/items/whatsGoinOn`);
+    expect(resp.statusCode).toEqual(400);
   });
 });

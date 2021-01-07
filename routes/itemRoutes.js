@@ -51,7 +51,7 @@ router.delete("/:name", middleware.invalidItem, function (req, res, next) {
   let item = items.find(item => item['name'] === req.params.name);
   let itemIndex = items.indexOf(item);
   items.splice(itemIndex, 1);
-
+  console.log("Delete function: ===> ", items, item, itemIndex);
   return res.json({ message: "Deleted" });
 });
 
